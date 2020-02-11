@@ -7,8 +7,11 @@
 <script>
     /* eslint-disable */
     import * as THREE from 'three';
+    import { computeCameraPositon } from './common/utils';
 
     const { innerHeight, innerWidth } = window;
+    const width = innerWidth / 4;
+    const height = innerHeight / 4;
 
     export default {
         name: 'app',
@@ -39,15 +42,12 @@
                 /*
                  * 摄像机
                  */
-                const camera = (this.camera = new THREE.OrthographicCamera(
-                    -innerWidth / 2,
-                    innerWidth / 2,
-                    innerHeight / 2,
-                    -innerHeight / 2,
-                    0.1,
-                    1000
-                ));
-                camera.position.set(-100, 100, -100);
+                const camera = (this.camera = new THREE.OrthographicCamera(-width / 2, width / 2, height / 2, -height / 2, 0.1, 1000));
+                // 相机位置计算(固定视角高度前提下)
+                const { x, y, z } = computeCameraPositon(35, 225, height, height, 0.1, 1000);
+                camera.position.set(x, y, z);
+                // camera.position.set(-100, 100, -100);
+
                 // 看向场景中心点
                 camera.lookAt(scene.position);
                 scene.add(camera);
@@ -58,6 +58,8 @@
                 const boxGeometry = new THREE.BoxBufferGeometry(100, 50, 100);
                 const boxMaterial = new THREE.MeshLambertMaterial({ color: 0x67c23a });
                 const box = (this.box = new THREE.Mesh(boxGeometry, boxMaterial));
+                // box.geometry.translate(0, 15, 0)
+                box.translateY(15)
                 // 让物体投射阴影
                 box.castShadow = true;
                 scene.add(box);
@@ -87,7 +89,8 @@
                  * 地面
                  */
                 const planeGeometry = new THREE.PlaneBufferGeometry(10e2, 10e2, 1, 1);
-                const planeMaterial = new THREE.ShadowMaterial();
+                // const planeMaterial = new THREE.ShadowMaterial();
+                const planeMaterial = new THREE.MeshLambertMaterial({ color: 0xf2eada });
                 // planeMaterial.opacity = 0.2;
                 const plane = new THREE.Mesh(planeGeometry, planeMaterial);
                 plane.rotation.x = -0.5 * Math.PI;
@@ -106,24 +109,10 @@
                     antialias: true // 抗锯齿
                 });
                 renderer.setSize(innerWidth, innerHeight);
+                renderer.shadowMap.enabled = true
 
                 // 渲染
                 renderer.render(scene, camera);
-
-                // // 地面plane 接收阴影
-                // const geometry = new THREE.PlaneBufferGeometry(3, 3, 1, 1);
-                // const meterial = new THREE.MeshLambertMaterial({ color: 0x2194ce, side: THREE.DoubleSide, wireframe: false });
-                // const plane = (this.plane = new THREE.Mesh(geometry, meterial));
-                // plane.position.set(0, -1, 0);
-                // plane.lookAt(0, 0, 0);
-                // plane.receiveShadow = true;
-                // scene.add(plane);
-
-                // // 光源(平行光)
-                // const light = new THREE.DirectionalLight(0xffffff, 0.8);
-                // light.position.set(-10, 30, -20);
-                // light.castShadow = true; // 投射阴影
-                // scene.add(light);
             },
             // gui 调试器
             initDatGui() {
