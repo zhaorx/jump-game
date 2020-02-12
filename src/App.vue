@@ -13,6 +13,17 @@
     const width = innerWidth / 4;
     const height = innerHeight / 4;
 
+    // 维护一个道具生成器集合
+    const boxCreators = [];
+    // 共享立方体
+    const baseBoxBufferGeometry = new THREE.BoxBufferGeometry();
+    // 共享材质
+    const baseMeshLambertMaterial = new THREE.MeshLambertMaterial();
+    // 随机颜色
+    const colors = [0x67c23a, 0xe6a23c, 0xf56c6c];
+    // 盒子大小限制范围
+    const boxSizeRange = [30, 60];
+
     export default {
         name: 'app',
         data() {
@@ -30,6 +41,9 @@
         },
         methods: {
             init() {
+                // 将盒子创造起存入管理集合中
+                boxCreators.push(defaultBoxCreator);
+
                 /*
                  * 场景
                  */
@@ -59,7 +73,7 @@
                 const boxMaterial = new THREE.MeshLambertMaterial({ color: 0x67c23a });
                 const box = (this.box = new THREE.Mesh(boxGeometry, boxMaterial));
                 // box.geometry.translate(0, 15, 0)
-                box.translateY(15)
+                box.translateY(15);
                 // 让物体投射阴影
                 box.castShadow = true;
                 scene.add(box);
@@ -109,10 +123,22 @@
                     antialias: true // 抗锯齿
                 });
                 renderer.setSize(innerWidth, innerHeight);
-                renderer.shadowMap.enabled = true
+                renderer.shadowMap.enabled = true;
 
                 // 渲染
                 renderer.render(scene, camera);
+            },
+            defaultBoxCreator() {
+                const [minSize, maxSize] = boxSizeRange;
+                const randomSize = ~~(random() * (maxSize - minSize + 1)) + minSize;
+                const geometry = baseBoxBufferGeometry.clone();
+                geometry.scale(randomSize, 30, randomSize);
+
+                const randomColor = colors[~~(Math.random() * colors.length)];
+                const material = baseMeshLambertMaterial.clone();
+                material.setValues({ randomColor });
+
+                return new THREE.Mesh(geometry, material);
             },
             // gui 调试器
             initDatGui() {

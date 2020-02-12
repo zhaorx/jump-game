@@ -1,3 +1,8 @@
+// 材质
+export const baseMeshLambertMaterial = new THREE.MeshLambertMaterial()
+// 立方体
+export const baseBoxBufferGeometry = new THREE.BoxBufferGeometry()
+
 /**
  * 根据角度计算相机初始位置
  * @param {Number} verticalDeg 相机和场景中心点的垂直角度
@@ -28,3 +33,5 @@ export function computeCameraPositon(verticalDeg, horizontalDeg, top, bottom, ne
 
     return { x, y, z };
 }
+
+

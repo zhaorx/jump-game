@@ -1,0 +1,3 @@
+class JumpGameWorld {
+    constructor(){}
+}

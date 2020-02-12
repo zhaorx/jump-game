@@ -1,0 +1,3 @@
+class LittleMan {
+    constructor(){}
+}
