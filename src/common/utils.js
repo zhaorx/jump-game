@@ -1,3 +1,11 @@
+import * as THREE from 'three'
+
+export let propCounter = 0
+export const incrementPropCounter = () => propCounter++
+export const resetPropCounter = () => (propCounter = 0)
+
+export const colors = [0x67C23A, 0xE6A23C, 0xF56C6C, 0x909399, 0x409EFF, 0xffffff]
+
 // 材质
 export const baseMeshLambertMaterial = new THREE.MeshLambertMaterial()
 // 立方体
@@ -32,6 +40,16 @@ export function computeCameraPositon(verticalDeg, horizontalDeg, top, bottom, ne
     const z = Math.cos(horizontalRadian) * longEdge;
 
     return { x, y, z };
+}
+
+export const randomArrayElm = array => array[floor(random() * array.length)]
+
+export const rangeNumberInclusive = (min, max) => floor(random() * (max - min + 1)) + min
+
+export const getPropSize = box => {
+  const box3 = getPropSize.box3 || (getPropSize.box3 = new THREE.Box3())
+  box3.setFromObject(box)
+  return box3.getSize(new THREE.Vector3())
 }
 
 
