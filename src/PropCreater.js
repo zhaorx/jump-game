@@ -1,5 +1,27 @@
+import { baseMeshLambertMaterial, baseBoxBufferGeometry, randomArrayElm } from './utils';
+import { actives, statics } from './defaultProp';
+import * as THREE from 'three';
+
 class PropCreater {
-    constructor() {}
+    constructor({ propHeight, propSizeRange, needDefaultCreator }) {
+        this.propHeight = propHeight;
+        this.propSizeRange = propSizeRange;
+
+        // 维护的创造器
+        this.propCreators = [];
+
+        if (needDefaultCreator) {
+            this.createPropCreator(actives, false);
+            this.createPropCreator(statics, true);
+        }
+    }
+
+    createProp(index) {
+        const { propCreators } = this;
+        return index > -1
+            ? (propCreators[index] && propCreators[index]()) || randomArrayElm(propCreators)()
+            : randomArrayElm(propCreators)();
+    }
 
     /**
      * 新增定制化的生成器
@@ -40,3 +62,5 @@ class PropCreater {
         propCreators.push(wrappedCreator);
     }
 }
+
+export default PropCreater;
