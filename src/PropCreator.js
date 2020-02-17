@@ -2,7 +2,7 @@ import { baseMeshLambertMaterial, baseBoxBufferGeometry, randomArrayElm } from '
 import { actives, statics } from './defaultProp';
 import * as THREE from 'three';
 
-class PropCreater {
+class PropCreator {
     constructor({ propHeight, propSizeRange, needDefaultCreator }) {
         this.propHeight = propHeight;
         this.propSizeRange = propSizeRange;
@@ -63,4 +63,4 @@ class PropCreater {
     }
 }
 
-export default PropCreater;
+export default PropCreator;

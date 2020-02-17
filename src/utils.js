@@ -1,15 +1,18 @@
-import * as THREE from 'three'
+ /* eslint-disable */
+import * as THREE from 'three';
 
-export let propCounter = 0
-export const incrementPropCounter = () => propCounter++
-export const resetPropCounter = () => (propCounter = 0)
+const { random, sqrt, floor, pow, sin, cos, tan, PI } = Math
 
-export const colors = [0x67C23A, 0xE6A23C, 0xF56C6C, 0x909399, 0x409EFF, 0xffffff]
+export let propCounter = 0;
+export const incrementPropCounter = () => propCounter++;
+export const resetPropCounter = () => (propCounter = 0);
+
+export const colors = [0x67c23a, 0xe6a23c, 0xf56c6c, 0x909399, 0x409eff, 0xffffff];
 
 // 材质
-export const baseMeshLambertMaterial = new THREE.MeshLambertMaterial()
+export const baseMeshLambertMaterial = new THREE.MeshLambertMaterial();
 // 立方体
-export const baseBoxBufferGeometry = new THREE.BoxBufferGeometry()
+export const baseBoxBufferGeometry = new THREE.BoxBufferGeometry();
 
 /**
  * 根据角度计算相机初始位置
@@ -20,7 +23,7 @@ export const baseBoxBufferGeometry = new THREE.BoxBufferGeometry()
  * @param {Number} near 摄像机视锥体近端面
  * @param {Number} far 摄像机视锥体远端面
  */
-export function computeCameraPositon(verticalDeg, horizontalDeg, top, bottom, near, far) {
+export function computeCameraInitalPosition(verticalDeg, horizontalDeg, top, bottom, near, far) {
     const verticalRadian = verticalDeg * (Math.PI / 180);
     const horizontalRadian = horizontalDeg * (Math.PI / 180);
 
@@ -42,14 +45,12 @@ export function computeCameraPositon(verticalDeg, horizontalDeg, top, bottom, ne
     return { x, y, z };
 }
 
-export const randomArrayElm = array => array[floor(random() * array.length)]
+export const randomArrayElm = array => array[floor(random() * array.length)];
 
-export const rangeNumberInclusive = (min, max) => floor(random() * (max - min + 1)) + min
+export const rangeNumberInclusive = (min, max) => floor(random() * (max - min + 1)) + min;
 
 export const getPropSize = box => {
-  const box3 = getPropSize.box3 || (getPropSize.box3 = new THREE.Box3())
-  box3.setFromObject(box)
-  return box3.getSize(new THREE.Vector3())
-}
-
-
+    const box3 = getPropSize.box3 || (getPropSize.box3 = new THREE.Box3());
+    box3.setFromObject(box);
+    return box3.getSize(new THREE.Vector3());
+};

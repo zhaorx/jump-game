@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 
 class Stage {
-    constructor(
+    constructor({
         width,
         height,
         canvas,
@@ -10,7 +10,7 @@ class Stage {
         cameraFar, // 相机远截面
         cameraInitalPosition, // 相机初始位置
         lightInitalPosition // 光源初始位置
-    ) {
+    }) {
         this.width = width;
         this.height = height;
         this.canvas = canvas;
@@ -63,6 +63,45 @@ class Stage {
         }
     }
 
+    // 相机
+    createCamera() {
+        const {
+            scene,
+            width,
+            height,
+            cameraInitalPosition: { x, y, z },
+            cameraNear,
+            cameraFar
+        } = this;
+        const camera = (this.camera = new THREE.OrthographicCamera(-width / 2, width / 2, height / 2, -height / 2, cameraNear, cameraFar));
+
+        camera.position.set(x, y, z);
+        camera.lookAt(scene.position);
+        scene.add(camera);
+    }
+
+    // 渲染器
+    createRenterer() {
+        const { canvas, width, height } = this;
+        const renderer = (this.renderer = new THREE.WebGLRenderer({
+            canvas,
+            alpha: true, // 透明场景
+            antialias: true // 抗锯齿
+        }));
+
+        renderer.setSize(width, height);
+        // 开启阴影
+        renderer.shadowMap.enabled = true;
+        // 设置设备像素
+        renderer.setPixelRatio(window.devicePixelRatio);
+    }
+
+    // 执行渲染
+    render() {
+        const { scene, camera } = this;
+        this.renderer.render(scene, camera);
+    }
+
     createPlane() {
         const { scene } = this;
         const geometry = new THREE.PlaneBufferGeometry(10e2, 10e2, 1, 1);
@@ -112,4 +151,14 @@ class Stage {
     remove(...args) {
         return this.scene.remove(...args);
     }
+
+    // 移动相机
+    moveCamera({ x, z }) {
+        const { camera } = this;
+        camera.position.x = x;
+        camera.position.z = z;
+        this.render();
+    }
 }
+
+export default Stage;
