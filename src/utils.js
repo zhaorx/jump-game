@@ -1,7 +1,8 @@
- /* eslint-disable */
+/* eslint-disable */
 import * as THREE from 'three';
+import TWEEN from '@tweenjs/tween.js'
 
-const { random, sqrt, floor, pow, sin, cos, tan, PI } = Math
+const { random, sqrt, floor, pow, sin, cos, tan, PI } = Math;
 
 export let propCounter = 0;
 export const incrementPropCounter = () => propCounter++;
@@ -10,13 +11,13 @@ export const resetPropCounter = () => (propCounter = 0);
 export const colors = [0x67c23a, 0xe6a23c, 0xf56c6c, 0x909399, 0x409eff, 0xffffff];
 
 // 材质
-export const baseMeshLambertMaterial = new THREE.MeshLambertMaterial()
+export const baseMeshLambertMaterial = new THREE.MeshLambertMaterial();
 // 立方体
-export const baseBoxBufferGeometry = new THREE.BoxBufferGeometry(1, 1, 1, 10, 4, 10)
-baseBoxBufferGeometry.userData.type = 'box'
+export const baseBoxBufferGeometry = new THREE.BoxBufferGeometry(1, 1, 1, 10, 4, 10);
+baseBoxBufferGeometry.userData.type = 'box';
 // 圆柱体
-export const baseCylinderBufferGeometry = new THREE.CylinderBufferGeometry(1, 1, 1, 30, 5)
-baseCylinderBufferGeometry.userData.type = 'Cylinder'
+export const baseCylinderBufferGeometry = new THREE.CylinderBufferGeometry(1, 1, 1, 30, 5);
+baseCylinderBufferGeometry.userData.type = 'Cylinder';
 
 /**
  * 根据角度计算相机初始位置
@@ -56,4 +57,45 @@ export const getPropSize = box => {
     const box3 = getPropSize.box3 || (getPropSize.box3 = new THREE.Box3());
     box3.setFromObject(box);
     return box3.getSize(new THREE.Vector3());
+};
+
+export const animate = (configs, onUpdate, onComplete) => {
+    const {
+        from,
+        to,
+        duration,
+        easing = k => k,
+        autoStart = true // 为了使用tween的chain
+    } = configs;
+
+    const tween = new TWEEN.Tween(from)
+        .to(to, duration)
+        .easing(easing)
+        .onUpdate(onUpdate)
+        .onComplete(() => {
+            onComplete && onComplete();
+        });
+
+    if (autoStart) {
+        tween.start();
+    }
+
+    animateFrame();
+    return tween;
+};
+
+const animateFrame = function() {
+    if (animateFrame.openin) {
+        return;
+    }
+    animateFrame.openin = true;
+
+    const animate = () => {
+        const id = requestAnimationFrame(animate);
+        if (!TWEEN.update()) {
+            animateFrame.openin = false;
+            cancelAnimationFrame(id);
+        }
+    };
+    animate();
 };

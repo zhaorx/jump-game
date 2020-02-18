@@ -133,28 +133,42 @@ class JumpGameWorld {
         props.push(prop);
     }
 
-    // 移动相机，总是看向最后2个小球的中间位置
-    moveCamera() {
+    // 移动相机，总是看向最后2个盒子的中间位置
+    moveCamera(duration = 500) {
         const {
             stage,
             height,
-            cameraInitalPosition: { x: initX, y: initY, z: initZ }
+            cameraInitalPosition: { x: cameraX, y: cameraY, z: cameraZ },
+            lightInitalPosition: { x: lightX, y: lightY, z: lightZ }
         } = this;
-
         // 将可视区向上偏移一点，这样看起来道具的位置更合理
         const cameraOffsetY = height / 10;
 
         const { x, y, z } = this.getLastTwoCenterPosition();
-        const to = {
-            x: x + initX + cameraOffsetY,
-            y: initY, // 高度是不变的
-            z: z + initZ + cameraOffsetY
+        const cameraTo = {
+            x: x + cameraX + cameraOffsetY,
+            y: cameraY, // 高度是不变的
+            z: z + cameraZ + cameraOffsetY
+        };
+        const lightTo = {
+            x: x + lightX,
+            y: lightY,
+            z: z + lightZ
         };
 
         // 移动舞台相机
-        stage.moveCamera(to, () => {
-            this.clearProps();
-        });
+        const options = {
+            cameraTo,
+            lightTo,
+            center: { x, y, z }
+        };
+        stage.moveCamera(
+            options,
+            () => {
+                this.clearProps();
+            },
+            duration
+        );
     }
 
     // 计算最新的2个盒子的中心点

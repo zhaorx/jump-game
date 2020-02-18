@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import { animate } from './utils';
 
 class Stage {
     constructor({
@@ -124,8 +125,10 @@ class Stage {
             lightInitalPosition: { x, y, z },
             height
         } = this;
-        const light = (this.light = new THREE.DirectionalLight(0xffffff, 0.8));
+        const light = (this.light = new THREE.DirectionalLight(0xffffff, 0.5));
+        const lightTarget = (this.lightTarget = new THREE.Object3D());
 
+        light.target = lightTarget;
         light.position.set(x, y, z);
         // 开启阴影投射
         light.castShadow = true;
@@ -141,7 +144,9 @@ class Stage {
         light.shadow.mapSize.height = 1600;
 
         // 环境光
-        scene.add(new THREE.AmbientLight(0xffffff, 0.4));
+        scene.add(new THREE.AmbientLight(0xe5e7e9, 0.4));
+        scene.add(new THREE.HemisphereLight(0xffffff, 0xffffff, 0.2));
+        scene.add(lightTarget);
         scene.add(light);
     }
 
@@ -154,13 +159,43 @@ class Stage {
     }
 
     // 移动相机
-    moveCamera({ x, z },onComplete) {
-        const { camera } = this;
-        camera.position.x = x;
-        camera.position.z = z;
-        this.render();
+    // center为2个盒子的中心点
+    moveCamera({ cameraTo, center, lightTo }, onComplete, duration) {
+        const { camera, plane, light, lightTarget, lightInitalPosition } = this;
 
-        onComplete()
+        // 移动相机
+        animate(
+            {
+                from: { ...camera.position },
+                to: cameraTo,
+                duration
+            },
+            ({ x, y, z }) => {
+                camera.position.x = x;
+                camera.position.z = z;
+                this.render();
+            },
+            onComplete
+        );
+
+        // 灯光和目标也需要动起来，为了保证阴影位置不变
+        const { x: lightInitalX, z: lightInitalZ } = lightInitalPosition;
+        animate(
+            {
+                from: { ...light.position },
+                to: lightTo,
+                duration
+            },
+            ({ x, y, z }) => {
+                lightTarget.position.x = x - lightInitalX;
+                lightTarget.position.z = z - lightInitalZ;
+                light.position.set(x, y, z);
+            }
+        );
+
+        // 保证不会跑出有限大小的地面
+        plane.position.x = center.x;
+        plane.position.z = center.z;
     }
 }
 
