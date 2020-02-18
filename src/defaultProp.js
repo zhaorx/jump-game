@@ -37,6 +37,7 @@ export const actives = [
 
     return new THREE.Mesh(geometry, material)
   },
+  // 圆柱形创造器
   function defaultCreator (THREE, helpers) {
     const {
       propSizeRange: [min, max],

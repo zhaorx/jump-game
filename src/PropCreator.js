@@ -1,4 +1,4 @@
-import { baseMeshLambertMaterial, baseBoxBufferGeometry, randomArrayElm } from './utils';
+import { baseMeshLambertMaterial, baseBoxBufferGeometry, baseCylinderBufferGeometry, randomArrayElm } from './utils';
 import { actives, statics } from './defaultProp';
 import * as THREE from 'three';
 
@@ -31,6 +31,7 @@ class PropCreator {
     createPropCreator(creator, isStatic) {
         if (Array.isArray(creator)) {
             creator.forEach(crt => this.createPropCreator(crt, isStatic));
+            return;
         }
 
         const { propCreators, propSizeRange, propHeight } = this;
@@ -48,7 +49,8 @@ class PropCreator {
                     propSizeRange,
                     propHeight,
                     baseMeshLambertMaterial,
-                    baseBoxBufferGeometry
+                    baseBoxBufferGeometry,
+                    baseCylinderBufferGeometry
                 });
 
                 if (isStatic) {

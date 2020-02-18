@@ -61,8 +61,11 @@ class Prop {
         }
 
         const { x, z } = prev.getPosition();
-        // 随机2个方向 x or z
-        const direction = Math.round(Math.random()) === 0;
+        // 随机2个方向 x or z(头2个盒子只在z方向上)
+        let direction = Math.round(Math.random()) === 0;
+        if (enterHeight === 0) {
+            direction = false;
+        }
         const { x: prevWidth, z: prevDepth } = prev.getSize();
         const { x: currentWidth, z: currentDepth } = this.getSize();
         // 根据区间随机一个距离
@@ -88,10 +91,21 @@ class Prop {
         body.receiveShadow = true;
         body.position.set(x, y, z);
         // 需要将盒子放到地面
-        body.geometry.translate(0, height / 2, 0);
+        body.geometry.translate(0, -this.enterHeight + height / 2, 0);
 
         stage.add(body);
         stage.render();
+    }
+
+    // 销毁
+    dispose() {
+        const { body, stage } = this;
+
+        body.geometry.dispose();
+        body.material.dispose();
+        stage.remove(body);
+        // 解除对前一个的引用
+        this.prev = null;
     }
 }
 

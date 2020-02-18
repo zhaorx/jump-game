@@ -57,6 +57,7 @@ class Stage {
     // 场景
     createScene() {
         const scene = (this.scene = new THREE.Scene());
+        scene.background = new THREE.Color(0xf6f5ec);
 
         if (this.axesHelper) {
             scene.add(new THREE.AxesHelper(10e3));
@@ -106,7 +107,7 @@ class Stage {
         const { scene } = this;
         const geometry = new THREE.PlaneBufferGeometry(10e2, 10e2, 1, 1);
         const meterial = new THREE.ShadowMaterial();
-        meterial.opacity = 0.5;
+        meterial.opacity = 0.8;
 
         const plane = (this.plane = new THREE.Mesh(geometry, meterial));
         plane.rotation.x = -0.5 * Math.PI;
@@ -153,11 +154,13 @@ class Stage {
     }
 
     // 移动相机
-    moveCamera({ x, z }) {
+    moveCamera({ x, z },onComplete) {
         const { camera } = this;
         camera.position.x = x;
         camera.position.z = z;
         this.render();
+
+        onComplete()
     }
 }
 

@@ -16,9 +16,9 @@ class JumpGameWorld {
         this.needDefaultCreator = needDefaultCreator;
         this.axesHelper = axesHelper;
 
-        const [min, max] = [~~(this.width / 6), ~~(this.height / 3.5)];
+        const [min, max] = [~~(this.width / 6), ~~(this.width / 3.5)];
         this.propSizeRange = [min, max];
-        this.propHeight = ~~(max / 2);
+        this.propHeight = ~~(max / 2.5);
         this.propDistanceRange = [~~(min / 2), max * 2];
 
         this.stage = null;
@@ -33,9 +33,10 @@ class JumpGameWorld {
         this.initStage();
         this.initPropCreator();
         // 第一个道具
-        this.createProp();
+        this.createProp(0);
         // 第二个道具
-        this.createProp();
+        this.createProp(0);
+        this.moveCamera();
 
         // 测试
         const autoMove = () => {
@@ -46,7 +47,7 @@ class JumpGameWorld {
                 this.moveCamera();
             }, 2000);
         };
-        // autoMove();
+        autoMove();
     }
 
     // 初始化舞台
@@ -151,7 +152,9 @@ class JumpGameWorld {
         };
 
         // 移动舞台相机
-        stage.moveCamera(to);
+        stage.moveCamera(to, () => {
+            this.clearProps();
+        });
     }
 
     // 计算最新的2个盒子的中心点
@@ -167,6 +170,20 @@ class JumpGameWorld {
             x: x1 + (x2 - x1) / 2,
             z: z1 + (z2 - z1) / 2
         };
+    }
+
+    // 销毁道具
+    clearProps() {
+        const {
+            props,
+            props: { length }
+        } = this;
+        const point = 4;
+
+        if (length > 12) {
+            props.slice(0, point).forEach(prop => prop.dispose());
+            this.props = props.slice(point);
+        }
     }
 }
 

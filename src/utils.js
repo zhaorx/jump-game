@@ -10,9 +10,13 @@ export const resetPropCounter = () => (propCounter = 0);
 export const colors = [0x67c23a, 0xe6a23c, 0xf56c6c, 0x909399, 0x409eff, 0xffffff];
 
 // 材质
-export const baseMeshLambertMaterial = new THREE.MeshLambertMaterial();
+export const baseMeshLambertMaterial = new THREE.MeshLambertMaterial()
 // 立方体
-export const baseBoxBufferGeometry = new THREE.BoxBufferGeometry();
+export const baseBoxBufferGeometry = new THREE.BoxBufferGeometry(1, 1, 1, 10, 4, 10)
+baseBoxBufferGeometry.userData.type = 'box'
+// 圆柱体
+export const baseCylinderBufferGeometry = new THREE.CylinderBufferGeometry(1, 1, 1, 30, 5)
+baseCylinderBufferGeometry.userData.type = 'Cylinder'
 
 /**
  * 根据角度计算相机初始位置
@@ -29,7 +33,6 @@ export function computeCameraInitalPosition(verticalDeg, horizontalDeg, top, bot
 
     const minY = Math.cos(verticalRadian) * bottom;
     const maxY = Math.sin(verticalRadian) * (far - near - top / Math.tan(verticalRadian));
-    console.log(minY, maxY);
 
     if (minY > maxY) {
         console.warn('警告: 垂直角度太小了!');

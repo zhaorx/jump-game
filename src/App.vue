@@ -26,13 +26,18 @@
 </script>
 
 <style>
+    body {
+        margin: 0;
+    }
+
     .jump-world {
-        width: 2000px;
-        height: 1600px;
+        margin: auto;
+        width: 375px;
+        height: 667px;
     }
 
     canvas {
-        width: 2000px;
-        height: 1600px;
+        width: 375px;
+        height: 667px;
     }
 </style>
