@@ -47,7 +47,12 @@ class JumpGameWorld {
                 this.moveCamera();
             }, 2000);
         };
-        autoMove();
+        window.addEventListener('click', () => {
+            // 每次有新的道具时，需要移动相机
+            this.createProp();
+            this.moveCamera();
+        });
+        // autoMove();
     }
 
     // 初始化舞台

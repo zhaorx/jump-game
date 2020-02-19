@@ -1,4 +1,5 @@
-import { rangeNumberInclusive, getPropSize } from './utils';
+import { rangeNumberInclusive, getPropSize, animate } from './utils';
+import TWEEN from '@tweenjs/tween.js';
 
 class Prop {
     constructor({
@@ -51,12 +52,14 @@ class Prop {
 
         if (!prev) {
             // 第1个盒子
+            console.log('position1', position);
             return position;
         }
 
         if (enterHeight === 0) {
             // 第2个盒子，固定一个距离
             position.z = world.width / 2;
+            console.log('position2', position);
             return position;
         }
 
@@ -79,6 +82,8 @@ class Prop {
             position.z = z + prevDepth / 2 + randomDistance + currentDepth / 2;
         }
 
+        console.log('position', position);
+
         return position;
     }
 
@@ -90,11 +95,35 @@ class Prop {
         body.castShadow = true;
         body.receiveShadow = true;
         body.position.set(x, y, z);
-        // 需要将盒子放到地面
-        body.geometry.translate(0, -this.enterHeight + height / 2, 0);
+        // 需要将盒子向上移动自己一半高度,然后entranceTransition移动至0
+        body.geometry.translate(0, height / 2, 0);
 
         stage.add(body);
         stage.render();
+
+        this.entranceTransition();
+    }
+
+    // 盒子的入场动画
+    entranceTransition(duration = 400) {
+        const { body, enterHeight, stage, height } = this;
+
+        if (enterHeight === 0) {
+            return;
+        }
+
+        animate(
+            {
+                to: { y: 0 },
+                from: { y: enterHeight },
+                duration,
+                easing: TWEEN.Easing.Bounce.Out
+            },
+            ({ y }) => {
+                body.position.setY(y);
+                stage.render();
+            }
+        );
     }
 
     // 销毁
