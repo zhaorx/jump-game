@@ -44,6 +44,7 @@ class Stage {
     bindResizeEvent() {
         const { container, renderer } = this;
         window.addEventListener('resize', () => {
+            if (!container) return;
             const { offsetWidth, offsetHeight } = container;
 
             this.width = offsetWidth;

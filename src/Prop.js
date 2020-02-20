@@ -52,14 +52,12 @@ class Prop {
 
         if (!prev) {
             // 第1个盒子
-            console.log('position1', position);
             return position;
         }
 
         if (enterHeight === 0) {
             // 第2个盒子，固定一个距离
             position.z = world.width / 2;
-            console.log('position2', position);
             return position;
         }
 
